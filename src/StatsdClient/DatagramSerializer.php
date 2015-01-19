@@ -6,12 +6,16 @@ class DatagramSerializer
 {
     public function serializeMetricDatagram($metricName, $value, $type, $sampleRate = 1.0, array $tags = array())
     {
-        if ($sampleRate < 0 || $sampleRate > 1 || !is_numeric($sampleRate)) {
-            throw new \InvalidArgumentException("Sample rate must be a floating point value between 0 and 1");
+        if (strlen($metricName) == 0) {
+            throw new \InvalidArgumentException('The metric name must be a string with length greater than 0');
         }
 
         if (!in_array($type, ["c", "g", "h", "ms", "s"])) {
             throw new \InvalidArgumentException("Type must be one of 'c', 'g', 'h', 'ms', or 's'");
+        }
+
+        if ($sampleRate < 0 || $sampleRate > 1 || !is_numeric($sampleRate)) {
+            throw new \InvalidArgumentException("Sample rate must be a floating point value between 0 and 1");
         }
 
         $datagram = '';

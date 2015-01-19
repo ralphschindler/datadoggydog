@@ -68,7 +68,8 @@ class StatsdClient
     {
         $name = $this->metricNamespace . $name;
         return $this->sender->send(
-            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'c', $sampleRate, $tags)
+            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'c', $sampleRate, $tags),
+            $sampleRate
         );
     }
 
@@ -84,7 +85,8 @@ class StatsdClient
     {
         $name = $this->metricNamespace . $name;
         return $this->sender->send(
-            $this->datagramSerializer->serializeMetricDatagram($name, (int) -$value, 'c', $sampleRate, $tags)
+            $this->datagramSerializer->serializeMetricDatagram($name, (int) -$value, 'c', $sampleRate, $tags),
+            $sampleRate
         );
     }
 
@@ -100,7 +102,8 @@ class StatsdClient
     {
         $name = $this->metricNamespace . $name;
         return $this->sender->send(
-            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'g', $sampleRate, $tags)
+            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'g', $sampleRate, $tags),
+            $sampleRate
         );
     }
 
@@ -116,7 +119,8 @@ class StatsdClient
     {
         $name = $this->metricNamespace . $name;
         $this->sender->send(
-            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'h', $sampleRate, $tags)
+            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'h', $sampleRate, $tags),
+            $sampleRate
         );
     }
 
@@ -132,7 +136,8 @@ class StatsdClient
     {
         $name = $this->metricNamespace . $name;
         $this->sender->send(
-            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'ms', $sampleRate, $tags)
+            $this->datagramSerializer->serializeMetricDatagram($name, $value, 'ms', $sampleRate, $tags),
+            $sampleRate
         );
     }
 
@@ -148,7 +153,8 @@ class StatsdClient
     {
         $name = $this->metricNamespace . $name;
         $this->sender->send(
-            $this->datagramSerializer->serializeMetricDatagram($name, $value, 's', $sampleRate, $tags)
+            $this->datagramSerializer->serializeMetricDatagram($name, $value, 's', $sampleRate, $tags),
+            $sampleRate
         );
     }
 
