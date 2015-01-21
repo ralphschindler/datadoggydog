@@ -13,8 +13,8 @@ class LogSender implements SenderInterface
         $this->logger = $logger;
     }
 
-    public function send($datagram, $sampleRate)
+    public function sendMetric($metricDatagram, $sampleRate)
     {
-        $this->logger->info($datagram);
+        $this->logger->info($metricDatagram);
     }
 }
