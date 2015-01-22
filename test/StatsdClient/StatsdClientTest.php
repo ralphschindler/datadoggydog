@@ -17,6 +17,13 @@ class StatsdClientTest extends \PHPUnit_Framework_TestCase
         $this->statsdClient = new StatsdClient($this->mockSender);
     }
 
+    public function testMetricNamespace()
+    {
+        $this->statsdClient->setMetricNamespace('foo');
+        $this->mockSender->expects($this->once())->method('send')->with($this->equalTo('foo.bar:1|c|@1.000'), $this->equalTo(1.0));
+        $this->statsdClient->increment('bar', 1);
+    }
+
     public function testIncrement()
     {
         $this->mockSender->expects($this->once())->method('send')->with($this->equalTo('foo.bar:1|c|@1.000'), $this->equalTo(1.0));
@@ -51,6 +58,30 @@ class StatsdClientTest extends \PHPUnit_Framework_TestCase
     {
         $this->mockSender->expects($this->once())->method('send')->with($this->equalTo('foo.bar:40|s|@1.000'), $this->equalTo(1.0));
         $this->statsdClient->set('foo.bar', 40);
+    }
+
+    /**
+     * @dataProvider eventDataProvider
+     */
+    public function testEvent($args, $expected)
+    {
+        $this->mockSender
+            ->expects($this->once())
+            ->method('send')
+            ->with($this->equalTo($expected), $this->equalTo(1.0))
+        ;
+        $this->statsdClient->event($args[0], $args[1], $args[2]);
+    }
+
+    public function eventDataProvider()
+    {
+        $time = time();
+        return [
+            [['foo-bar-title', 'boo-bam-description', []], '_e{13,19}:foo-bar-title|boo-bam-description'],
+            [['foo-bar-title', 'boo-bam-description', ['d' => $time]], "_e{13,19}:foo-bar-title|boo-bam-description|d:$time"],
+            [['foo-bar-title', 'boo-bam-description', ['date_happened' => $time]], "_e{13,19}:foo-bar-title|boo-bam-description|d:$time"],
+
+        ];
     }
 
 }

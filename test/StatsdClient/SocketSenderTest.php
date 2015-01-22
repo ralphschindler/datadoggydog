@@ -11,7 +11,6 @@ class SocketSenderTest extends \PHPUnit_Framework_TestCase
     public function setup()
     {
         $this->testSocket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
-
     }
 
     public function teardown()

@@ -167,12 +167,47 @@ class StatsdClient
             if (!isset($validOptionalMetadatas[$optionalMetadataKey]) && !isset($validLongOptionalMetadatas[$optionalMetadataKey])) {
                 throw new \InvalidArgumentException("They key name provided $optionalMetadataKey is not supported");
             }
-            $key = (strlen($optionalMetadataKey) == 1) ? $optionalMetadataKey : $validOptionalMetadatas[$optionalMetadataKey];
+            $key = (strlen($optionalMetadataKey) == 1) ? $optionalMetadataKey : $validLongOptionalMetadatas[$optionalMetadataKey];
             switch ($key) {
-                // @todo add key specific validation
-                default:
+                case 'd':
+                    if (!is_numeric($optionalMetadata)) {
+                        throw new \InvalidArgumentException('date_happened must be a number');
+                    }
+                    break;
+                case 'h':
+                case 'k':
+                case 's':
+                    if (strlen($optionalMetadata) > 0) {
+                        throw new \InvalidArgumentException("{$validOptionalMetadatas[$key]} must be a string");
+                    }
+                    break;
+                case 'p':
+                    if (!in_array($optionalMetadata, ['normal', 'low'])) {
+                        throw new \InvalidArgumentException('priority must be one of "normal" or "low"');
+                    }
+                    break;
+                case 't':
+                    if (!in_array($optionalMetadata, ['error', 'warning', 'info', 'success'])) {
+                        throw new \InvalidArgumentException('alert_type must be one of "error", "warning", "info", or "success"');
+                    }
+                    break;
+                case '#':
+                    if (is_array($optionalMetadata)) {
+                        $datagramTags = [];
+                        foreach ($optionalMetadata as $i => $tag) {
+                            if (is_array($tag)) {
+                                $datagramTags[] = array_keys($tag)[0] . ":" . array_values($tag)[0];
+                            } elseif (is_string($i) && !is_numeric($i)) {
+                                $datagramTags[] = $i . ':' . $tag;
+                            } else {
+                                $datagramTags[] = $tag;
+                            }
+                        }
+                        $optionalMetadata = implode(",", $datagramTags);
+                    }
+                    break;
             }
-            $datagram .= "$key:$optionalMetadata";
+            $datagram .= "|$key:$optionalMetadata";
         }
 
         $this->sender->send($datagram);
